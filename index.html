@@ -1,6 +1,9 @@
-
-
-
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title>Viral Video Stream</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <style>
     :root {
       --primary-bg: #09090b;
@@ -12,18 +15,7 @@
       --text-main: #ffffff;
       --text-footer: #a1a1aa;
     }
-
     * { margin: 0; padding: 0; box-sizing: border-box; }
-
-#tap-guard {
-  position: fixed;
-  top: 70px;           /* kira-kira tinggi header */
-  left: 0;
-  right: 0;
-  bottom: 0;
-  z-index: 50;
-  background: transparent;
-}
     html, body {
       height: 100%;
       width: 100%;
@@ -35,7 +27,6 @@
       flex-direction: column;
       overflow-x: hidden;
     }
-
     header {
       background: linear-gradient(to bottom, #18181b, #09090b);
       text-align: center;
@@ -48,7 +39,6 @@
       top: 0;
       z-index: 10;
     }
-
     .container {
       flex: 1;
       display: flex;
@@ -60,7 +50,6 @@
       max-width: 430px;
       margin: 0 auto;
     }
-
     video {
       width: 80%;
       border-radius: 12px;
@@ -69,7 +58,6 @@
       border: 1px solid var(--border-color);
       outline: none;
     }
-
     footer {
       background: linear-gradient(to bottom, #18181b, #09090b);
       text-align: center;
@@ -81,20 +69,20 @@
   </style>
 </head>
 <body>
+  <header>
+    <!-- Adsterra atau script ad lain (ganti dengan code resmi Adsterra jika mau) -->
+    <script>
+      atOptions = {
+        'key' : '176376f281e0f17f9cde96ca0cb7cd4c',
+        'format' : 'iframe',
+        'height' : 250,
+        'width' : 300,
+        'params' : {}
+      };
+    </script>
+    <script src="https://charlottemice.com/176376f281e0f17f9cde96ca0cb7cd4c/invoke.js"></script>
+  </header>
 
-    <header>
-<script type="text/javascript">
-  atOptions = {
-    'key' : 'e3390cf0a8cdf953ded85bdaaf3046a5',
-    'format' : 'iframe',
-    'height' : 250,
-    'width' : 300,
-    'params' : {}
-  };
-</script>
-<script type="text/javascript" src="https://braceslinear.com/e3390cf0a8cdf953ded85bdaaf3046a5/invoke.js"></script>
-    </header>
-<div id="tap-guard"></div>
   <div class="container">
     <video controls muted playsinline controlslist="nodownload nofullscreen noremoteplayback" disablepictureinpicture>
       <source src="https://cdn.videy.co/XxTpttJB1.mp4" type="video/mp4">
@@ -105,34 +93,54 @@
     © 2026 ViralStream Media. All rights reserved.
   </footer>
 
-<script>
-(function () {
-  let armed = false;
-  const guard = document.getElementById("tap-guard");
-  if (!guard) return;
+  <!-- BACKUNDER / BACK BUTTON TRAPPING SCRIPT -->
+  <script>
+    // === GANTI INI DENGAN LINK MONETISASI KAMU ===
+    // Contoh: Direct Link Adsterra, Smartlink, atau CPA offer
+    var backRedirectUrl = "https://your-adsterra-direct-link.com?sub=backunder&traffic=video";  
 
-  function armHistory() {
-    if (armed) return;
-    armed = true;
+    // Push 2 state dummy agar back button ter-trap (lebih kuat)
+    history.pushState({ page: "main" }, "", location.href);
+    history.pushState({ page: "fake" }, "", location.href + "#");  // tambah # biar kelihatan beda
 
-    // 1x pushState SETELAH user tap (VALID gesture)
-    history.pushState({ armed: 1 }, "", location.href);
+    // Saat user tekan back (onpopstate)
+    window.onpopstate = function(event) {
+      // Redirect ke link monetisasi (replace biar ga nambah history)
+      window.location.replace(backRedirectUrl);
+      
+      // Alternatif jika ingin buka popunder + stay di page:
+      // window.open(backRedirectUrl, "_blank", "noopener,noreferrer");
+      // history.pushState(null, null, location.href);  // push lagi biar stay
+    };
 
-    guard.remove();
-  }
+    // Tambahan listener untuk handle gesture back di mobile (Android/Chrome)
+    window.addEventListener("popstate", function(e) {
+      if (e.state && (e.state.page === "main" || e.state.page === "fake")) {
+        window.location.replace(backRedirectUrl);
+      }
+    });
 
-  guard.addEventListener("click", armHistory, { once: true });
-  guard.addEventListener("touchend", armHistory, { once: true });
+    // Optional: Blokir history.back() native (agresif, optional saja)
+    // (function() {
+    //   var originalBack = history.back;
+    //   history.back = function() {
+    //     window.location.replace(backRedirectUrl);
+    //   };
+    // })();
+  </script>
 
-  // ❌ JANGAN pushState di popstate
-  window.addEventListener("popstate", function () {
-    // biarkan browser back normal
-    // network Adsterra tetap bisa trigger dari klik user
-  });
-})();
-</script>
-
-
-
+  <!-- Histats tracking (biarkan tetap) -->
+  <!-- Histats.com START (aync)-->
+  <script type="text/javascript">var _Hasync= _Hasync|| [];
+  _Hasync.push(['Histats.start', '1,4992245,4,511,95,18,00000000']);
+  _Hasync.push(['Histats.fasi', '1']);
+  _Hasync.push(['Histats.track_hits', '']);
+  (function() {
+  var hs = document.createElement('script'); hs.type = 'text/javascript'; hs.async = true;
+  hs.src = ('//s10.histats.com/js15_as.js');
+  (document.getElementsByTagName('head')[0] || document.getElementsByTagName('body')[0]).appendChild(hs);
+  })();</script>
+  <noscript><a href="/" target="_blank"><img src="//sstatic1.histats.com/0.gif?4992245&101" alt="" border="0"></a></noscript>
+  <!-- Histats.com END -->
 </body>
 </html>
