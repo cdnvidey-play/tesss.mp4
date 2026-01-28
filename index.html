@@ -23,8 +23,11 @@
 
 #tap-guard {
   position: fixed;
-  inset: 0;
-  z-index: 999;
+  top: 70px;           /* kira-kira tinggi header */
+  left: 0;
+  right: 0;
+  bottom: 0;
+  z-index: 50;
   background: transparent;
 }
     html, body {
@@ -113,16 +116,18 @@
   let armed = false;
   let fired = false;
   const guard = document.getElementById("tap-guard");
+  if (!guard) return;
+
 
   function armHistory() {
-    if (armed) return;
-    armed = true;
+  if (armed) return;
+  armed = true;
 
-    history.pushState({ armed: 1 }, "", location.href);
+  history.pushState({ armed: 1 }, "", location.href);
 
-    // hapus overlay setelah tap pertama
-    guard.remove();
-  }
+  guard.style.display = "none";
+  guard.remove();
+}
 
   // gesture PASTI valid
   guard.addEventListener("click", armHistory, { once: true });
