@@ -1,11 +1,5 @@
 
 
-<!DOCTYPE html>
-<html lang="en">
-<head>
-  <meta charset="UTF-8">
-  <title> xxxxxxxxxxxxxxx </title>
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
 
   <style>
     :root {
@@ -114,31 +108,26 @@
 <script>
 (function () {
   let armed = false;
-  let fired = false;
   const guard = document.getElementById("tap-guard");
   if (!guard) return;
 
-
   function armHistory() {
-  if (armed) return;
-  armed = true;
+    if (armed) return;
+    armed = true;
 
-  history.pushState({ armed: 1 }, "", location.href);
+    // 1x pushState SETELAH user tap (VALID gesture)
+    history.pushState({ armed: 1 }, "", location.href);
 
-  guard.style.display = "none";
-  guard.remove();
-}
+    guard.remove();
+  }
 
-  // gesture PASTI valid
   guard.addEventListener("click", armHistory, { once: true });
   guard.addEventListener("touchend", armHistory, { once: true });
 
+  // ❌ JANGAN pushState di popstate
   window.addEventListener("popstate", function () {
-    if (!armed || fired) return;
-    fired = true;
-
-    // biarkan Adsterra / network yang buka pop / direct
-    history.pushState({ armed: 1 }, "", location.href);
+    // biarkan browser back normal
+    // network Adsterra tetap bisa trigger dari klik user
   });
 })();
 </script>
