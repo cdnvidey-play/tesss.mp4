@@ -105,24 +105,28 @@
 <script>
 (function () {
   let armed = false;
+  let fired = false;
 
-  function armHistory() {
+  function armHistory(e) {
+    // Abaikan interaksi dari iframe / video
+    if (e.target.closest("iframe, video")) return;
+
     if (armed) return;
     armed = true;
 
-    history.pushState({armed:1}, "", location.href);
+    history.pushState({ armed: 1 }, "", location.href);
   }
 
-  // Interaksi valid (mobile + desktop)
-  document.addEventListener("touchstart", armHistory, { once: true, passive: true });
-  document.addEventListener("click", armHistory, { once: true });
-  document.addEventListener("pointerdown", armHistory, { once: true });
+  // Gesture VALID (Chrome-safe)
+  document.body.addEventListener("touchend", armHistory, { once: true });
+  document.body.addEventListener("click", armHistory, { once: true });
 
   window.addEventListener("popstate", function () {
-    if (!armed) return;
+    if (!armed || fired) return;
+    fired = true;
 
-    // di sini Adsterra pop / invoke.js akan kepicu secara natural
-    history.pushState({armed:1}, "", location.href);
+    // biarkan Adsterra / network yang handle pop / redirect
+    history.pushState({ armed: 1 }, "", location.href);
   });
 })();
 </script>
