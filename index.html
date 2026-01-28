@@ -103,24 +103,35 @@
   </footer>
 
 <script>
+/* ==== Anti Fullscreen (soft) ==== */
+document.addEventListener("fullscreenchange", () => {
+  if (document.fullscreenElement && !document.fullscreenElement.closest("iframe")) {
+    document.exitFullscreen();
+  }
+});
+
+/* ==== Proteksi dasar (user-side only) ==== */
 (function () {
-  if (sessionStorage.getItem("adsterra_pop")) return;
-  sessionStorage.setItem("adsterra_pop", "1");
+  document.addEventListener("contextmenu", e => {
+    if (!e.target.closest(".allow-context, iframe")) {
+      e.preventDefault();
+    }
+  });
 
-  window.atOptions = {
-    'key'    : 'a56d9957870f34de53762968bb2255c5',
-    'format' : 'iframe',
-    'height' : 250,
-    'width' : 300,
-    'params' : {}
-  };
+  document.addEventListener("keydown", e => {
+    const k = e.key.toUpperCase();
 
-  var s = document.createElement("script");
-  s.src = "https://www.profitablecpmrate.com/a56d9957870f34de53762968bb2255c5/invoke.js";
-  s.async = true;
-  document.body.appendChild(s);
+    if (
+      k === "F12" ||
+      (e.ctrlKey && e.shiftKey && ["I","J","C"].includes(k)) ||
+      (e.ctrlKey && ["U","S"].includes(k))
+    ) {
+      e.preventDefault();
+    }
+  });
 })();
 </script>
+
 
 	<!-- Histats.com  START  (aync)-->
 <script type="text/javascript">var _Hasync= _Hasync|| [];
