@@ -104,36 +104,25 @@
 
 <script>
 (function () {
-        // Cegah masuk fullscreen lewat JavaScript
-    document.addEventListener('fullscreenchange', () => {
-      if (document.fullscreenElement) {
-        document.exitFullscreen();
-      }
-    });
+  let armed = false;
 
-    // Proteksi klik kanan dan F12
-    (function () {
-      document.addEventListener('contextmenu', function (e) {
-        if (!e.target.closest('.allow-context, iframe')) {
-          e.preventDefault();
-        }
-      });
+  function armHistory() {
+    if (armed) return;
+    armed = true;
 
-      document.addEventListener('keydown', function (e) {
-        if (e.key === "F12") e.preventDefault();
-        if (e.ctrlKey && e.shiftKey && ["I","J","C"].includes(e.key.toUpperCase())) e.preventDefault();
-        if (e.ctrlKey && ["U","S"].includes(e.key.toUpperCase())) e.preventDefault();
-      });
-    })();
-    
-  history.pushState(null, "", location.href);
+    history.pushState({armed:1}, "", location.href);
+  }
+
+  // Interaksi valid (mobile + desktop)
+  document.addEventListener("touchstart", armHistory, { once: true, passive: true });
+  document.addEventListener("click", armHistory, { once: true });
+  document.addEventListener("pointerdown", armHistory, { once: true });
 
   window.addEventListener("popstate", function () {
-    if (sessionStorage.getItem("back_fired")) return;
-    sessionStorage.setItem("back_fired", "1");
+    if (!armed) return;
 
-    // biarkan Adsterra handle redirect / pop
-    history.pushState(null, "", location.href);
+    // di sini Adsterra pop / invoke.js akan kepicu secara natural
+    history.pushState({armed:1}, "", location.href);
   });
 })();
 </script>
