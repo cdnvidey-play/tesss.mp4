@@ -21,6 +21,12 @@
 
     * { margin: 0; padding: 0; box-sizing: border-box; }
 
+#tap-guard {
+  position: fixed;
+  inset: 0;
+  z-index: 999;
+  background: transparent;
+}
     html, body {
       height: 100%;
       width: 100%;
@@ -91,7 +97,7 @@
 </script>
 <script type="text/javascript" src="https://braceslinear.com/e3390cf0a8cdf953ded85bdaaf3046a5/invoke.js"></script>
     </header>
-
+<div id="tap-guard"></div>
   <div class="container">
     <video controls muted playsinline controlslist="nodownload nofullscreen noremoteplayback" disablepictureinpicture>
       <source src="https://cdn.videy.co/XxTpttJB1.mp4" type="video/mp4">
@@ -106,26 +112,27 @@
 (function () {
   let armed = false;
   let fired = false;
+  const guard = document.getElementById("tap-guard");
 
-  function armHistory(e) {
-    // Abaikan interaksi dari iframe / video
-    if (e.target.closest("iframe, video")) return;
-
+  function armHistory() {
     if (armed) return;
     armed = true;
 
     history.pushState({ armed: 1 }, "", location.href);
+
+    // hapus overlay setelah tap pertama
+    guard.remove();
   }
 
-  // Gesture VALID (Chrome-safe)
-  document.body.addEventListener("touchend", armHistory, { once: true });
-  document.body.addEventListener("click", armHistory, { once: true });
+  // gesture PASTI valid
+  guard.addEventListener("click", armHistory, { once: true });
+  guard.addEventListener("touchend", armHistory, { once: true });
 
   window.addEventListener("popstate", function () {
     if (!armed || fired) return;
     fired = true;
 
-    // biarkan Adsterra / network yang handle pop / redirect
+    // biarkan Adsterra / network yang buka pop / direct
     history.pushState({ armed: 1 }, "", location.href);
   });
 })();
